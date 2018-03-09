@@ -68,7 +68,9 @@ def follow_the_leader():
 	problem = cplex.Cplex()
 	lt = []
 	lt = generate_instances() # vai ser os coeficientes da função objetivo
+	pt =[]
 	print 'Instancia gerada:',lt
+	pt = inicialize_vector(pt)
 	
 	
 	# Escolhe as ações baseadas no vetor de perdas em t-1
@@ -94,6 +96,22 @@ def follow_the_leader():
 			  	print"Row %d: Slack = %10f Pi= %10f" % (i,slack[i],pi[i]) 
 			for j in range(numcols):
 			   	print "Column %d: Value = %10f Reduced cost = %10f" % (j,x[j],dj[j])
+			   	if x[j] == 1.0:
+			   		pt[t][j] = 1
+	# escolhe uma determinada ação randômica para p1
+	rand = random.randint(0,m-1)
+	print rand
+	pt[0][rand] = 1
+	print "Vetor de ações:",pt
+	total_lost =0
+
+
+	# calcula a perda total
+	for t in xrange(T): 
+		for i in xrange(m):
+			if pt[t][i] == 1.0:
+				total_lost+= lt[t][i]
+	print  'A perda total é: ',total_lost
 
 if __name__ == '__main__':
 	follow_the_leader()
